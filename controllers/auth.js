@@ -1,4 +1,5 @@
 const User = require('../schemas/user');
+const jwt = require('jsonwebtoken');
 
 exports.join = async (req, res, next) => {
   const user = new User({
@@ -30,7 +31,22 @@ exports.login = async (req, res, next) => {
 
   if (await User.exists({id: user.id})){
     if (await User.exists({id: user.id, pw: user.pw})){
-      res.end('1'); return;
+      const token = jwt.sign({
+        id: user.id,
+        name: user.name
+      }, process.env.JWT_SECRET, {
+        expiresIn: '15m',
+        issuer: 'jonghun',
+      });
+      res.cookie('jwt', token, {
+        expires: new Date(Date.now() + 900000),
+        httpOnly: true,
+      });
+      return res.json({
+        code: 200,
+        message: '토큰이 발급되었습니다.',
+        token,
+      });
     } else{
       res.end('2'); return;
     }
@@ -38,3 +54,9 @@ exports.login = async (req, res, next) => {
     res.end('3'); return;
   }
 }
+
+exports.test = async (req, res, next) => {
+  const user = jwt.verify(req.cookies.jwt, process.env.JWT_SECRET);
+  console.log(user);
+  res.end('dd');
+};
