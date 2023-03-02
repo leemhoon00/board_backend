@@ -60,3 +60,8 @@ exports.test = async (req, res, next) => {
   console.log(user);
   res.end('dd');
 };
+
+exports.logout = async (req, res, next) => {
+  res.clearCookie('jwt');
+  res.end();
+}
