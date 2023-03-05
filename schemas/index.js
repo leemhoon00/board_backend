@@ -13,6 +13,7 @@ const connect = () => {
     ssl: true,
     sslValidate: true,
     sslCA: path.join(__dirname, "rds-combined-ca-bundle.pem"),
+    retryWrites: false,
   })
     .then((res) => {
       console.log('몽고디비 연결성공');

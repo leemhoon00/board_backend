@@ -13,7 +13,7 @@ connect();
 const authRouter = require('./routes/auth');
 
 const app = express();
-app.set('port', process.env.PORT || 3001);
+app.set('port', process.env.PORT || 5004);
 app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
@@ -22,8 +22,10 @@ app.use(cookieParser());
 
 app.use(cors({
   credentials: true,
-  origin: 'http://localhost:3000',
+  origin: 'http://ec2-43-201-99-215.ap-northeast-2.compute.amazonaws.com',
+  methods: ["POST", "OPTIONS"],
 }));
+
 app.use('/auth', authRouter);
 
 app.use((req, res, next) => {
